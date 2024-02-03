@@ -9,6 +9,7 @@
 #include <boost/property_tree/ptree.hpp>
 
 #include "valhalla_go.h"
+#include <stdexcept>
 
 const boost::property_tree::ptree configure(boost::property_tree::ptree pt, const std::string& config) {
   try {

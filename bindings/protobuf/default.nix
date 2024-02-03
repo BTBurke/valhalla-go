@@ -14,7 +14,7 @@
 }:
 
 let
-  version = "3.21.8";
+  version = "3.21.12";
   self = stdenv.mkDerivation {
     name = "protobuf";
   
@@ -22,7 +22,7 @@ let
       owner = "protocolbuffers";
       repo = "protobuf";
       rev = "v${version}";
-      sha256 = "sha256-cSNHX18CvMmydpYWqfe6WWk9rGxIlFfY/85rfSyznU4=";
+      sha256 = "VZQEFHq17UsTH5CZZOcJBKiScGV2xPJ/e6gkkVliRCU=";
     };
   
     # re-create submodule logic
@@ -62,7 +62,7 @@ let
   
     # After 3.20, CMakeLists.txt can now be found at the top-level, however
     # a stub cmake/CMakeLists.txt still exists for compatibility with previous build assumptions
-    cmakeDir = "../cmake";
+    # cmakeDir = "../cmake";
     cmakeFlags = [
       "-Dprotobuf_ABSL_PROVIDER=package"
     ];

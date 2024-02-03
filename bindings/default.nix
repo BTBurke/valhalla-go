@@ -1,15 +1,24 @@
 { nixpkgs ? import <nixpkgs> {}
 , lib
 , stdenv
-, abseil-cpp
-, cmake
 , fetchFromGitHub
 , fetchpatch
-, gtest
-, zlib
-
-# downstream dependencies
+, cmake
+, pkg-config
+, boost
+, curl
+, geos
+, libspatialite
+, luajit
+, prime-server
+, protobuf
 , python3
+, sqlite
+, zeromq
+, zlib
+, testers
+, abseil-cpp
+, gtest
 
 , ...
 }:
@@ -17,35 +26,34 @@
 with nixpkgs;
 
 let
-  valhallaCustom = (import ./valhalla) { inherit stdenv fetchFromGitHub cmake; };
-  protobufCustom = (import ./protobuf) { inherit lib abseil-cpp stdenv fetchFromGitHub cmake fetchpatch gtest zlib python3; };
+  valhallaCustom = (import ./valhalla) { inherit lib stdenv fetchFromGitHub fetchpatch cmake pkg-config boost curl geos libspatialite luajit prime-server protobuf python3 sqlite zeromq zlib testers; };
 in stdenv.mkDerivation rec {
-  name = "valhalla-go";
+  name = "valhallago";
   src = ./.;
 
   buildInputs = [
     boost179
     valhallaCustom
     zlib.static
-    protobufCustom
+    protobuf
   ];
 
   buildPhase = ''
-    c++ \
+    g++ \
       valhalla_go.cpp \
       -fPIC \
       -shared \
-      -o libvalhalla_go.so \
+      -o libvalhallago.so \
       -Wl,-Bstatic \
       -lvalhalla \
-      -lprotobuf-lite \
       -lz \
       -Wl,-Bdynamic \
+      -lprotobuf \
       -lpthread
   '';
 
   installPhase = ''
     mkdir -p $out/lib
-    cp libvalhalla_go.so $out/lib
+    cp libvalhallago.so $out/lib
   '';
 }

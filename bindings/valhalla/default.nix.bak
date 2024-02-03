@@ -1,0 +1,50 @@
+{ nixpkgs ? import <nixpkgs> {}, stdenv, fetchFromGitHub, cmake }:
+
+with nixpkgs;
+
+stdenv.mkDerivation rec {
+  name = "valhalla";
+
+  src = fetchFromGitHub {
+    owner = "valhalla";
+    repo = "valhalla";
+    rev = "refs/heads/master";
+    sha256 = "v6ci4O7Au6A3MdfxqmT0gBQThodBpAXvnRiyS7Dv2ac=";
+    fetchSubmodules = true;
+  };
+
+  cmakeFlags = [
+    "-DENABLE_CCACHE=OFF"
+    "-DENABLE_SINGLE_FILES_WERROR=OFF"
+    "-DCMAKE_C_COMPILER=gcc"
+    "-DBUILD_SHARED_LIBS=OFF"
+    "-DENABLE_BENCHMARKS=OFF"
+    "-DENABLE_PYTHON_BINDINGS=OFF"
+    "-DENABLE_TESTS=OFF"
+    "-DENABLE_TOOLS=OFF"
+    "-DENABLE_SERVICES=OFF"
+    "-DENABLE_HTTP=OFF"
+    "-DENABLE_CCACHE=OFF"
+    "-DENABLE_DATA_TOOLS=OFF"
+    "-DCMAKE_BUILD_TYPE=Release"
+  ];
+
+  buildInputs = [
+    cmake
+    zlib
+    boost179
+    protobuf
+    sqlite
+    libspatialite
+    luajit
+    geos
+    pkg-config
+  ];
+
+  # install necessary headers
+  postInstall = ''
+    cp -r $src/third_party/rapidjson/include/* $out/include
+    cp -r $src/third_party/date/include/* $out/include
+  '';
+
+}
